@@ -1,0 +1,28 @@
+settings:
+  root_dir: "./datasets/GAN/"
+  checkpoint_path: "/content/drive/MyDrive/datasets/GAN/weights/"
+  result_folder: "/content/drive/MyDrive/datasets/GAN/results/"
+
+  cuda: True
+  lr: 0.001
+  batch_size: 2
+  num_workers: 4
+
+  step_iters: [100, 250, 450]
+  gamma: 0.1
+
+  d_num_layers: 3
+
+  visualize_per_iter: 25
+  save_per_iter: 25
+  print_per_iter: 25
+  num_epochs: 5
+
+  lambda_G: 1.0
+  lambda_rec_1: 100.0
+  lambda_rec_2: 100.0
+  lambda_per: 10.0
+
+  img_size_w: 178
+  img_size_h: 218
+
