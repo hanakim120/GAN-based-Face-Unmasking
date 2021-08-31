@@ -1,12 +1,13 @@
 import torch
 import torch.nn as nn
-from torch.nn import Parameter
 import torch.nn.functional as F
-import torch.utils.data as data
 import functools
 from torchvision.models import vgg19, vgg16
 
 class GatedConv2d(nn.Module):
+    # Layer : ZeroPad2d,Conv2d,Conv2d,sigmoid
+    # Instance or None(input,Transpose layer) 
+    # Tanh(output) or LeakyReLU
     def __init__(self, in_channels, out_channels, kernel_size, stride = 1, padding = 0, dilation = 1, activation = 'lrelu', norm = 'in'):
         super(GatedConv2d, self).__init__()
         self.pad = nn.ZeroPad2d(padding)
@@ -38,10 +39,11 @@ class GatedConv2d(nn.Module):
         return x
 
 class TransposeGatedConv2d(nn.Module):
+    # layer : interpolate + ZeroPad2d,Conv2d,Conv2d,sigmoid
     def __init__(self, in_channels, out_channels, kernel_size, stride = 1, padding = 0, dilation = 1, norm=None, scale_factor = 2):
         super(TransposeGatedConv2d, self).__init__()
         # Initialize the conv scheme
-        self.scale_factor = scale_factor
+        self.scale_factor = scale_factor #2
         self.gated_conv2d = GatedConv2d(in_channels, out_channels, kernel_size, stride, padding, dilation, norm=norm)
     
     def forward(self, x):
@@ -54,7 +56,7 @@ class GatedGenerator(nn.Module):
     def __init__(self, in_channels=4, latent_channels=64, out_channels=3):
         super(GatedGenerator, self).__init__()
         self.coarse = nn.Sequential(
-            # encoder
+            # encoder       # kernel_size, stride, padding , dilation
             GatedConv2d(in_channels, latent_channels, 7, 1, 3, norm = None),
             GatedConv2d(latent_channels, latent_channels * 2, 4, 2, 1),
             GatedConv2d(latent_channels * 2, latent_channels * 4, 3, 1, 1),
@@ -75,7 +77,7 @@ class GatedGenerator(nn.Module):
             GatedConv2d(latent_channels, out_channels, 7, 1, 3, activation = 'tanh', norm = None)
         )
         self.refinement = nn.Sequential(
-            # encoder
+            # encoder               # kernel, stride, padding , dilation
             GatedConv2d(in_channels, latent_channels, 7, 1, 3, norm = None),
             GatedConv2d(latent_channels, latent_channels * 2, 4, 2, 1),
             GatedConv2d(latent_channels * 2, latent_channels * 4, 3, 1, 1),
@@ -114,44 +116,42 @@ class GatedGenerator(nn.Module):
 
 
 class NLayerDiscriminator(nn.Module):
+    # edit_trainer : Model_D(input_nc = cfg.d_num_layers= 3, use_sigmoid=False)
+    # input_nc(int) : the number of channels in input images
+    # ndf(int) : the number of filters
+    # n_layers(int) : the number of conv layers in the discriminator
     def __init__(self, input_nc, ndf=64, n_layers=3, norm_layer=nn.BatchNorm2d, use_sigmoid=False):
         super(NLayerDiscriminator, self).__init__()
         if type(norm_layer) == functools.partial:
             use_bias = norm_layer.func == nn.InstanceNorm2d
         else:
             use_bias = norm_layer == nn.InstanceNorm2d
-
+        # input layer
         kw = 4
         padw = 1
+        strw = 2
         sequence = [
-            nn.Conv2d(input_nc, ndf, kernel_size=kw, stride=2, padding=padw),
+            nn.Conv2d(input_nc, ndf, kernel_size=kw, stride=strw, padding=padw),
             nn.LeakyReLU(0.2, True)
         ]
-
+        # layer : (Conv2d, BatchNorm2d, LeakyReLU) *3  /nf_mult(output) : 2, 4, 8
         nf_mult = 1
-        nf_mult_prev = 1
-        for n in range(1, n_layers):
+        for n in range(1, n_layers+1): #3
             nf_mult_prev = nf_mult
-            nf_mult = min(2**n, 8)
+            nf_mult = min(2**n, 8) #2, 4, 8
+
+            strw = 1 if nf_mult is 8 else 2
+
             sequence += [
                 nn.Conv2d(ndf * nf_mult_prev, ndf * nf_mult,
-                          kernel_size=kw, stride=2, padding=padw, bias=use_bias),
+                          kernel_size=kw, stride=strw, padding=padw, bias=use_bias),
                 norm_layer(ndf * nf_mult),
                 nn.LeakyReLU(0.2, True)
             ]
-
-        nf_mult_prev = nf_mult
-        nf_mult = min(2**n_layers, 8)
-        sequence += [
-            nn.Conv2d(ndf * nf_mult_prev, ndf * nf_mult,
-                      kernel_size=kw, stride=1, padding=padw, bias=use_bias),
-            norm_layer(ndf * nf_mult),
-            nn.LeakyReLU(0.2, True)
-        ]
-
+        # layer : Conv2d
         sequence += [nn.Conv2d(ndf * nf_mult, 1, kernel_size=kw, stride=1, padding=padw)]
 
-        if use_sigmoid:
+        if use_sigmoid: #False
             sequence += [nn.Sigmoid()]
 
         self.model = nn.Sequential(*sequence)
@@ -185,16 +185,16 @@ class PerceptualNet(nn.Module):
         self.mean = torch.nn.Parameter(torch.tensor([0.485, 0.456, 0.406]).view(1,3,1,1))
         self.std = torch.nn.Parameter(torch.tensor([0.229, 0.224, 0.225]).view(1,3,1,1))
         self.resize = resize
-
-    def forward(self, inputs, targets):
+                    
+    def forward(self, inputs, targets): #second_out_wholeimg, imgs
         if inputs.shape[1] != 3:
             inputs = inputs.repeat(1, 3, 1, 1)
             targets = targets.repeat(1, 3, 1, 1)
         inputs = (inputs-self.mean) / self.std
         targets = (targets-self.mean) / self.std
         if self.resize:
-            inputs = self.transform(inputs, mode='bilinear', size=(512, 512), align_corners=False)
-            targets = self.transform(targets, mode='bilinear', size=(512, 512), align_corners=False)
+            inputs = self.transform(inputs, mode='bilinear', size=(128, 128), align_corners=False)
+            targets = self.transform(targets, mode='bilinear', size=(128, 128), align_corners=False)
         loss = 0.0
         x = inputs
         y = targets
@@ -203,6 +203,5 @@ class PerceptualNet(nn.Module):
             y = block(y)
             loss += torch.nn.functional.l1_loss(x, y)
         return loss
-
 
 
