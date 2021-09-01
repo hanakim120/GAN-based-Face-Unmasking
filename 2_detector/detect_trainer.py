@@ -25,7 +25,7 @@ from torch.optim.lr_scheduler import StepLR
 from torchvision.utils import save_image
 
 ##########################성현님, 윤정님###############################
-from models import UNetSemantic # detec_model.py 에서 모델부분
+from models import UNetSemantic # detect_model.py 에서 모델부분
 from losses import DiceLoss
 from datasets import FacemaskSegDataset
 
@@ -56,7 +56,7 @@ def load_checkpoint(model, path):
     model.load_state_dict(state)
     print('Loaded checkpoint successfully')
 
-class Detec_Trainer():
+class Detect_Trainer():
     def __init__(self, args, cfg):
         
         if args.resume is not None:
