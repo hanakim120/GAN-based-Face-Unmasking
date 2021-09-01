@@ -4,11 +4,6 @@
 
 ######output###############
 
-######input################
-#1. 마스크 쓰고있는 사람 사진
-#2. bianry 사진
-
-######output###############
 
 import os
 import cv2
@@ -25,9 +20,9 @@ from torch.optim.lr_scheduler import StepLR
 from torchvision.utils import save_image
 
 ##########################성현님, 윤정님###############################
-from models import UNetSemantic # detect_model.py 에서 모델부분
-from losses import DiceLoss
-from datasets import FacemaskSegDataset
+from 2_detector import Detector, FacemaskSegDataset  # detect_model.py 에서 모델부분
+from loss import DiceLoss
+
 
 # lr 조절
 def adjust_learning_rate(optimizer, gamma, num_steps=1):
@@ -100,7 +95,7 @@ class Detect_Trainer():
         self.iters = self.start_iter
         self.num_iters = (self.num_epochs+1) * len(self.trainloader)
 #########################성현님##########################
-        self.model = UNetSemantic().to(self.device)
+        self.model = Detector().to(self.device)
         self.criterion_dice = DiceLoss()
         self.criterion_bce = nn.BCELoss()
 
