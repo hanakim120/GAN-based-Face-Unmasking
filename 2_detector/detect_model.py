@@ -3,14 +3,14 @@ import torch.nn as nn
 import torch.nn.init as init
 
 
-img_size = 128,128
+img_size = 128
 in_dim = 32
 out_dim = 1
 num_filters = 32
 num_epoch = 500
 lr = 0.001
 
-# UnetGenerator에 들어가는 block 설정
+# Detector 들어가는 block 설정
 def conv_block(in_dim,out_dim):
     model = nn.Sequential(
         nn.Conv2d(in_dim,out_dim, kernel_size=3, stride=1, padding=1),
@@ -22,11 +22,9 @@ def conv_block(in_dim,out_dim):
 def conv_block1(in_dim,out_dim):
     model = nn.Sequential(
         nn.Conv2d(in_dim,out_dim, kernel_size=3, stride=1, padding=1),
-        nn.BatchNorm2d(out_dim),
-        nn.ReLU(inplace=True),
         nn.Conv2d(in_dim,out_dim, kernel_size=3, stride=1, padding=1),
-        nn.BatchNorm2d(out_dim),
-        nn.ReLU(inplace=True),
+        nn.InstanceNorm2d(out_dim),
+        nn.LeakyReLU(0.2, inplace=True),
 
     )
     return model
@@ -53,10 +51,10 @@ def conv_block_2(in_dim,out_dim):
     return model
 
 
-# UnetGenerator 쌓음
-class UnetGenerator(nn.Module):
+# dector 쌓음
+class Detector(nn.Module):
     def __init__(self, in_dim, out_dim, num_filter):
-        super(UnetGenerator, self).__init__()
+        super(Detector, self).__init__()
         self.in_dim = in_dim
         self.out_dim = out_dim
         self.num_filter = num_filter
@@ -119,7 +117,7 @@ class UnetGenerator(nn.Module):
 # cuda 설정 및 optimizer,loss설정 (변경해야할 수 있음)
 cuda = torch.device('cuda')
 
-model = UnetGenerator(in_dim=in_dim,out_dim=out_dim,num_filter=num_filters)
+model = Detector(in_dim=in_dim,out_dim=out_dim,num_filter=num_filters)
 
 model = model.cuda()
 
