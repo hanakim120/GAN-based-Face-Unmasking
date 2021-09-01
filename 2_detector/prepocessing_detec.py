@@ -33,8 +33,8 @@ class FacemaskSegDataset(data.Dataset):
         img_masked_paths = os.listdir(img_masked_folder)
 
        for img_binary_name, img_masked_name in zip(img_binany_paths, img_masked_paths) :
-            img_binary_path = os.path.join(img_binary_folder, img_binary_name)
-            img_masked_path = os.path.join(img_masked_folder, img_masked_name)
+            img_binary_path = os.path.join(self.img_binary_folder, img_binary_name)
+            img_masked_path = os.path.join(self.img_masked_folder, img_masked_name)
             if os.path.isfile(img_binary_path) :
                 self.fns.append([img_masked_path, img_binary_path])
 
