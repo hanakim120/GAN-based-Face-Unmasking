@@ -1,7 +1,9 @@
 settings:
   root_dir: "./datasets/celeba/images"
-  train_anns: "./datasets/celeba/annotations/train.csv"
-  val_anns: "./datasets/celeba/annotations/val.csv"
+  img_binary_folder: "/home/ubuntu/GAN-based-Face-Unmasking/1_dataprepare/img_binary/"
+  img_masked_folder: "/home/ubuntu/GAN-based-Face-Unmasking/2_detector/img_masked/"
+  # train_anns: "./datasets/celeba/annotations/train.csv"
+  # val_anns: "./datasets/celeba/annotations/val.csv"
 
   checkpoint_path: 'weights' 
   #sample_folder: 'sample' 
@@ -19,5 +21,5 @@ settings:
   print_per_iter: 10
   num_epochs: 100
 
-  img_size: 512
+  img_size: 128
 
