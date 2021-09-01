@@ -122,5 +122,5 @@ model = Detector(in_dim=in_dim,out_dim=out_dim,num_filter=num_filters)
 model = model.cuda()
 
 
-loss_func = nn.BCELoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+# loss_func = nn.BCELoss()
+# optimizer = torch.optim.Adam(model.parameters(), lr=lr)
