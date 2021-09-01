@@ -11,9 +11,10 @@ import torch.utils.data as data
 from torch.optim.lr_scheduler import StepLR
 from torchvision.utils import save_image
 
-from edit_model import GatedGenerator, NLayerDiscriminator, PerceptualNet
-from loss import *
-from preprocessing_edit import FacemaskDataset
+
+import edit_model
+import preprocessing_edit
+from loss import adversarial,ssim
 
 def adjust_learning_rate(optimizer, gamma, num_steps=1):
     for i in range(num_steps):
@@ -67,7 +68,7 @@ class Trainer():
         self.num_epochs = cfg.num_epochs
         self.device = torch.device('cuda' if cfg.cuda else 'cpu')  
         
-        trainset = FacemaskDataset(cfg)
+        trainset = preprocessing_edit.FacemaskDataset(cfg)
 
         self.trainloader = data.DataLoader(
             trainset, 
@@ -75,22 +76,23 @@ class Trainer():
             num_workers = cfg.num_workers,
             pin_memory = True, 
             shuffle=True,
-            collate_fn = trainset.(collate_fn))
+            collate_fn = trainset.collate_fn
+        )
 
         self.epoch = int(self.start_iter / len(self.trainloader))
         self.iters = self.start_iter
         self.num_iters = (self.num_epochs+1) * len(self.trainloader)
 
-        self.model_G = GatedGenerator().to(self.device)
-        self.model_D = NLayerDiscriminator(cfg.d_num_layers, use_sigmoid=False).to(self.device)
-        self.model_P = PerceptualNet(name = "vgg16", resize=False).to(self.device)
+        self.model_G = edit_model.GatedGenerator().to(self.device)
+        self.model_D = edit_model.NLayerDiscriminator(cfg.d_num_layers, use_sigmoid=False).to(self.device)
+        self.model_P = edit_model.PerceptualNet(name = "vgg16", resize=False).to(self.device)
 
         if args.resume is not None:
             load_checkpoint(self.model_G, self.model_D, args.resume)
 
-        self.criterion_adv = GANLoss(target_real_label=0.9, target_fake_label=0.1)
+        self.criterion_adv = adversarial.GANLoss(target_real_label=0.9, target_fake_label=0.1)
         self.criterion_rec = nn.SmoothL1Loss()
-        self.criterion_ssim = SSIM(window_size = 11)
+        self.criterion_ssim = ssim.SSIM(window_size = 11)
         self.criterion_per = nn.SmoothL1Loss()
 
         self.optimizer_D = torch.optim.Adam(self.model_D.parameters(), lr=cfg.lr)

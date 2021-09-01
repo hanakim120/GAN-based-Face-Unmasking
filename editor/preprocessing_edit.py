@@ -30,13 +30,13 @@ class FacemaskDataset(data.Dataset):
     def __getitem__(self, index):
         img_gt_path, img_binary_path = self.fns[index]
         img_gt = cv2.imread(img_gt_path)
-        img_gt = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img_gt = cv2.cvtColor(img_gt, cv2.COLOR_BGR2RGB)
         img_gt = cv2.resize(img_gt, (self.cfg.img_size_h, self.cfg.img_size_w))
         img_binary = cv2.imread(img_binary_path, 0)
         img_binary[img_binary>0]=1.0
         img_binary = np.expand_dims(img_binary, axis=0)
     
-        img_gt = torch.from_numpy(img.astype(np.float32) / 255.0).permute(2, 0, 1).contiguous()
+        img_gt = torch.from_numpy(img_gt.astype(np.float32) / 255.0).permute(2, 0, 1).contiguous()
         img_binary = torch.from_numpy(img_binary.astype(np.float32)).contiguous()
         
         return img_gt, img_binary

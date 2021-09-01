@@ -1,9 +1,9 @@
 settings:
   root_dir: "/home/ubuntu/GAN-based-Face-Unmasking/"
-  img_binary_folder: "/home/ubuntu/GAN-based-Face-Unmasking/1_dataprepare/img_binary/"
-  img_gt_folder: "/home/ubuntu/GAN-based-Face-Unmasking/1_dataprepare/img_gt/"
-  checkpoint_path: "/home/ubuntu/GAN-based-Face-Unmasking/3_editor/weights/"
-  result_folder: "/home/ubuntu/GAN-based-Face-Unmasking/3_editor/results/"
+  img_binary_folder: "/home/ubuntu/GAN-based-Face-Unmasking/dataprepare/img_binary/"
+  img_gt_folder: "/home/ubuntu/GAN-based-Face-Unmasking/dataprepare/img_gt/"
+  checkpoint_path: "/home/ubuntu/GAN-based-Face-Unmasking/editor/weights/"
+  result_folder: "/home/ubuntu/GAN-based-Face-Unmasking/editor/results/"
 
   cuda: True
   lr: 0.001

@@ -1,7 +1,7 @@
 settings:
   root_dir: "./datasets/celeba/images"
-  img_binary_folder: "/home/ubuntu/GAN-based-Face-Unmasking/1_dataprepare/img_binary/"
-  img_masked_folder: "/home/ubuntu/GAN-based-Face-Unmasking/2_detector/img_masked/"
+  img_binary_folder: "/home/ubuntu/GAN-based-Face-Unmasking/dataprepare/img_binary/"
+  img_masked_folder: "/home/ubuntu/GAN-based-Face-Unmasking/detector/img_masked/"
   # train_anns: "./datasets/celeba/annotations/train.csv"
   # val_anns: "./datasets/celeba/annotations/val.csv"
 
