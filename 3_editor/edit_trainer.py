@@ -11,9 +11,9 @@ import torch.utils.data as data
 from torch.optim.lr_scheduler import StepLR
 from torchvision.utils import save_image
 
-from models import *
-from losses import *
-from datasets import FacemaskDataset
+from edit_model import GatedGenerator, NLayerDiscriminator, PerceptualNet
+from loss import *
+from preprocessing_edit import FacemaskDataset
 
 def adjust_learning_rate(optimizer, gamma, num_steps=1):
     for i in range(num_steps):
