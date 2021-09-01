@@ -18,7 +18,7 @@ class FacemaskDataset(data.Dataset):
     def load_images(self):
         self.fns = []
 
-        img_gt_paths = sorted(os.listdir(sself.img_gt_folder))
+        img_gt_paths = sorted(os.listdir(self.img_gt_folder))
         img_binary_paths = sorted(os.listdir(self.img_binary_folder))
 
         for img_gt_name, img_binary_name in zip(img_gt_paths,img_binary_paths):      
