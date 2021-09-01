@@ -1,7 +1,9 @@
 settings:
-  root_dir: "./datasets/GAN/"
-  checkpoint_path: "/content/drive/MyDrive/datasets/GAN/weights/"
-  result_folder: "/content/drive/MyDrive/datasets/GAN/results/"
+  root_dir: "/home/ubuntu/GAN-based-Face-Unmasking/"
+  img_binary_folder: "/home/ubuntu/GAN-based-Face-Unmasking/1_dataprepare/img_binary/"
+  img_gt_folder: "/home/ubuntu/GAN-based-Face-Unmasking/1_dataprepare/img_gt/"
+  checkpoint_path: "/home/ubuntu/GAN-based-Face-Unmasking/3_editor/weights/"
+  result_folder: "/home/ubuntu/GAN-based-Face-Unmasking/3_editor/results/"
 
   cuda: True
   lr: 0.001
@@ -23,6 +25,6 @@ settings:
   lambda_rec_2: 100.0
   lambda_per: 10.0
 
-  img_size_w: 178
-  img_size_h: 218
+  img_size_w: 128
+  img_size_h: 128
 
