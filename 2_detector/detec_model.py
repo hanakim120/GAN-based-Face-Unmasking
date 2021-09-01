@@ -125,4 +125,4 @@ model = model.cuda()
 
 
 loss_func = nn.BCELoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=0.99)
+optimizer = torch.optim.Adam(model.parameters(), lr=lr)
