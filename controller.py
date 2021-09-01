@@ -1,12 +1,12 @@
 import argparse
 from configs import Config
 from edit_trainer import Edit_Trainer ############윤정님##############
-from detec_trainer import Detec_Trainer
+from detect_trainer import Detect_Trainer
 import easydict
 
 def main(args, cfg):
-    # if args.config == 'detec':
-    #     trainer = Detec_Trainer(args,cfg)
+    # if args.config == 'detect':
+    #     trainer = Detect_Trainer(args,cfg)
     # else:
     trainer = Edit_Trainer(args, cfg)
     trainer.fit()
