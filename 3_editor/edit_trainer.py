@@ -11,9 +11,9 @@ import torch.utils.data as data
 from torch.optim.lr_scheduler import StepLR
 from torchvision.utils import save_image
 
-from models import *
-from losses import *
-from datasets import FacemaskDataset
+from edit_model import GatedGenerator, NLayerDiscriminator, PerceptualNet
+from loss import *
+from preprocessing_edit import FacemaskDataset
 
 def adjust_learning_rate(optimizer, gamma, num_steps=1):
     for i in range(num_steps):
@@ -52,8 +52,8 @@ class Trainer():
 
         if not os.path.exists(cfg.checkpoint_path):
             os.makedirs(cfg.checkpoint_path)
-        if not os.path.exists(cfg.sample_folder):
-            os.makedirs(cfg.sample_folder)
+        if not os.path.exists(cfg.result_folder):
+            os.makedirs(cfg.result_folder)
 
         self.cfg = cfg
         self.step_iters = cfg.step_iters
@@ -65,13 +65,9 @@ class Trainer():
         self.start_iter = iters
         self.iters = 0
         self.num_epochs = cfg.num_epochs
-        self.device = torch.device('cuda' if cfg.cuda else 'cpu')
-
-        
+        self.device = torch.device('cuda' if cfg.cuda else 'cpu')  
         
         trainset = FacemaskDataset(cfg)
-        #trainset = FacemaskDataset(cfg).fns
-        #FacemaskDataset(cfg) # Places365Dataset(cfg) #
 
         self.trainloader = data.DataLoader(
             trainset, 
@@ -100,11 +96,10 @@ class Trainer():
         self.optimizer_D = torch.optim.Adam(self.model_D.parameters(), lr=cfg.lr)
         self.optimizer_G = torch.optim.Adam(self.model_G.parameters(), lr=cfg.lr)
 
-    def validate(self, sample_folder, sample_name, img_list):
-        save_img_path = os.path.join(sample_folder, sample_name+'.png') 
+    def validate(self, result_folder, sample_name, img_list):
+        save_img_path = os.path.join(result_folder, sample_name+'.png') 
         img_list  = [i.clone().cpu() for i in img_list]
         imgs = torch.stack(img_list, dim=1)
-
         # imgs shape: Bx5xCxWxH
 
         imgs = imgs.view(-1, *list(imgs.size())[2:])
@@ -232,7 +227,7 @@ class Trainer():
                         img_list = [imgs, masked_imgs, first_out, second_out, second_out_wholeimg]
                         #name_list = ['gt', 'mask', 'masked_img', 'first_out', 'second_out']
                         filename = f"{self.epoch}_{str(self.iters)}"
-                        self.validate(self.cfg.sample_folder, filename , img_list)
+                        self.validate(self.cfg.result_folder, filename , img_list)
 
                     self.iters += 1
 

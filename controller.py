@@ -1,14 +1,14 @@
 import argparse
 from configs import Config
-from trainer import Trainer
-from unet_trainer import UNetTrainer
+from edit_trainer import Edit_Trainer ############윤정님##############
+from detect_trainer import Detect_Trainer
 import easydict
 
 def main(args, cfg):
-    # if args.config == 'segm':
-    #     trainer = Map_trainer(args,cfg)
+    # if args.config == 'detect':
+    #     trainer = Detect_Trainer(args,cfg)
     # else:
-    trainer = Trainer(args, cfg)
+    trainer = Edit_Trainer(args, cfg)
     trainer.fit()
 
 if __name__ == "__main__":
