@@ -1,4 +1,3 @@
-import argparse
 from configs import config
 from editor import edit_trainer
 from detector import detect_trainer
@@ -8,7 +7,7 @@ def main(args, cfg):
     # if args.config == 'detect':
     #     trainer = detect_trainer.Detect_Trainer(args,cfg)
     # else:
-    trainer = edit_trainer.Edit_Trainer(args, cfg)
+    trainer = edit_trainer.EditTrainer(args, cfg)
     trainer.fit()
 
 if __name__ == "__main__":
