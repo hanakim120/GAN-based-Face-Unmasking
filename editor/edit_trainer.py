@@ -216,10 +216,13 @@ class EditTrainer():
                         }, os.path.join(self.cfg.checkpoint_path, f"model_{self.epoch}_{self.iters}.pth"))
 
                     # Step learning rate
-                    if self.iters == self.step_iters[step]:
-                        adjust_learning_rate(self.optimizer_D, self.gamma)
-                        adjust_learning_rate(self.optimizer_G, self.gamma)
-                        step+=1
+                    if step<3:
+                        if self.iters == self.step_iters[step]:
+                            adjust_learning_rate(self.optimizer_D, self.gamma)
+                            adjust_learning_rate(self.optimizer_G, self.gamma)
+                            step+=1
+                   
+                            
                
                     # Visualize sample
                     if self.iters % self.visualize_per_iter == 0:
