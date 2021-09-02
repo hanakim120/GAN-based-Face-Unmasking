@@ -42,7 +42,7 @@ def load_checkpoint(model_G, model_D, path):
     model_D.load_state_dict(state['D'])
     print('Loaded checkpoint successfully')
 
-class Trainer():
+class EditTrainer():
     def __init__(self, args, cfg):
         
         if args.resume is not None:
