@@ -23,6 +23,6 @@ if __name__ == "__main__":
         'config' : 'config'
     })
 
-    config = config.Config('./configs/facemask.yaml')
+    config = config.Config('./configs/edit.yaml')
 
     main(args, config)
