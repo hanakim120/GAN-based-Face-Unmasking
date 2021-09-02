@@ -1,14 +1,14 @@
 import argparse
-from configs import Config
-from edit_trainer import Edit_Trainer ############윤정님##############
-from detect_trainer import Detect_Trainer
+from configs import config
+from editor import edit_trainer ############윤정님##############
+from detector import detect_trainer
 import easydict
 
 def main(args, cfg):
     # if args.config == 'detect':
-    #     trainer = Detect_Trainer(args,cfg)
+    #     trainer = detect_trainer.Detect_Trainer(args,cfg)
     # else:
-    trainer = Edit_Trainer(args, cfg)
+    trainer = edit_trainer.Edit_Trainer(args, cfg)
     trainer.fit()
 
 if __name__ == "__main__":
@@ -19,10 +19,10 @@ if __name__ == "__main__":
 
     # config = Config(f'./configs/{args.config}.yaml')
     args = easydict.EasyDict({
-        'resume' : './weights/model_16_3750.pth',
+        'resume' : 'None',
         'config' : 'config'
     })
 
-    config = Config('./configs/facemask.yaml')
+    config = config.Config('./configs/facemask.yaml')
 
     main(args, config)

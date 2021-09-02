@@ -20,9 +20,10 @@ from torch.optim.lr_scheduler import StepLR
 from torchvision.utils import save_image
 
 ##########################성현님, 윤정님###############################
-from 2_detector import Detector, FacemaskSegDataset  # detect_model.py 에서 모델부분
-from loss import DiceLoss
-
+# from 2_detector import Detector, FacemaskSegDataset # detect_model.py 에서 모델부분
+from detector import detect_model
+from loss import dice
+from metrics import dicecoeff,pixelacc
 
 # lr 조절
 def adjust_learning_rate(optimizer, gamma, num_steps=1):
@@ -72,8 +73,8 @@ class Detect_Trainer():
         self.num_epochs = cfg.num_epochs
         self.device = torch.device('cuda:1' if cfg.cuda else 'cpu')
 #########################윤정님#####################################
-        trainset = FacemaskSegDataset(cfg) # [img_path, mask_path]
-        valset = FacemaskSegDataset(cfg, train=False)
+        trainset = detect_model.FacemaskSegDataset(cfg) # [img_path, mask_path]
+        valset = detect_model.FacemaskSegDataset(cfg, train=False)
    
         self.trainloader = data.DataLoader(
             trainset, 
@@ -95,8 +96,8 @@ class Detect_Trainer():
         self.iters = self.start_iter
         self.num_iters = (self.num_epochs+1) * len(self.trainloader)
 #########################성현님##########################
-        self.model = Detector().to(self.device)
-        self.criterion_dice = DiceLoss()
+        self.model = detect_model.Detector().to(self.device)
+        self.criterion_dice = dice.DiceLoss()
         self.criterion_bce = nn.BCELoss()
 
         if args.resume is not None:
@@ -174,7 +175,7 @@ class Detect_Trainer():
         #Validate
         
         self.model.eval()
-        metrics = [DiceScore(1), PixelAccuracy(1)]
+        metrics = [dicecoeff.DiceScore(1), pixelacc.PixelAccuracy(1)]
         running_loss = {
             'DICE': 0,
             'BCE':0,
@@ -186,7 +187,7 @@ class Detect_Trainer():
         with torch.no_grad():
             start_time = time.time()
             for idx, batch in enumerate(tqdm(self.valloader)):
-                
+
                 inputs = batch['imgs'].to(self.device)
                 targets = batch['masks'].to(self.device)
                 outputs = self.model(inputs)

@@ -32,7 +32,7 @@ class FacemaskSegDataset(data.Dataset):
         img_binany_paths = os.listdir(self.img_binary_folder)
         img_masked_paths = os.listdir(self.img_masked_folder)
 
-       for img_binary_name, img_masked_name in zip(img_binany_paths, img_masked_paths) :
+        for img_binary_name, img_masked_name in zip(img_binany_paths, img_masked_paths) :
             img_binary_path = os.path.join(self.img_binary_folder, img_binary_name)
             img_masked_path = os.path.join(self.img_masked_folder, img_masked_name)
             if os.path.isfile(img_binary_path) :
@@ -43,8 +43,8 @@ class FacemaskSegDataset(data.Dataset):
     def __getitem__(self, index) :
         img_masked_path, img_binary_path = self.fns[index]
         img_masked = cv2.imread(img_masked_path)
-        img_masked = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img_masked = cv2.resize(img, (self.cfg.img_size, self.cfg.img_size))
+        img_masked = cv2.cvtColor(img_masked, cv2.COLOR_BGR2RGB)
+        img_masked = cv2.resize(img_masked, (self.cfg.img_size, self.cfg.img_size))
         img_binary = cv2.imread(img_binary_path, 0)
         img_binary[img_binary>0]=1.0
         img_binary = np.expand_dims(img_binary, axis=0)
