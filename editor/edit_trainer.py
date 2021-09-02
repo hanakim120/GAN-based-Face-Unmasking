@@ -12,8 +12,7 @@ from torch.optim.lr_scheduler import StepLR
 from torchvision.utils import save_image
 
 
-import edit_model
-import preprocessing_edit
+from editor import edit_model, preprocessing_edit
 from loss import adversarial,ssim
 
 def adjust_learning_rate(optimizer, gamma, num_steps=1):
