@@ -1,67 +1,66 @@
-import os
-import torch
-import torch.nn as nn
-import torch.utils.data as data
 import cv2
-import numpy as np
-from tqdm import tqdm
-import pandas as pd
+import matplotlib.pyplot as plt
+import os
 from PIL import Image
+import numpy
+import pickle
 
-class FacemaskSegDataset(data.Dataset):
+import torch
+from torchvision import transforms
+import torchvision.transforms as transforms
+
+
+img_masked_name = os.listdir('/content/drive/MyDrive/Ai_project/GAN_code_review/GAN-based-Face-Unmasking/detector/image/img_masked_validate')
+img_binary_name = os.listdir('/content/drive/MyDrive/Ai_project/GAN_code_review/GAN-based-Face-Unmasking/detector/image/img_binary_validate')
+root = '/content/drive/MyDrive/Ai_project/GAN_code_review/GAN-based-Face-Unmasking'
+print('File 개수 확인')
+print(len(img_masked_name))
+print(len(img_binary_name))
+
+print('Deviece 확인')
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+print(device)
+
+loader_color = transforms.Compose([transforms.ToTensor()])
+loader_gray = transforms.Compose([transforms.ToTensor(),
+                                  transforms.Grayscale(num_output_channels=1)])  # 토치 텐서로 변환
+
+def image_loader_color(image_name):
+    image = Image.open(image_name)
+    image = image.resize((128,128))
+    image = loader_color(image).unsqueeze(0)
+    return image.to(device, torch.float)
+
+def image_loader_gray(image_name):
+    image = Image.open(image_name)
+    image = image.resize((128,128))
+    image = loader_gray(image).unsqueeze(0)
+    return image.to(device, torch.float)
+
+train = []
+label = []
+
+for i in range(len(img_masked_name)):
+    image = image_loader_color(root +'/detector/image/img_masked_validate/'+ img_masked_name[i])
+    train.append(image)
+
+for i in range(len(img_binary_name)):
+    image = image_loader_gray(root +'/detector/image/img_binary_validate/'+ img_binary_name[i])
+    if i == 2:
+      print(image.size)
+    label.append(image)
+
+#피클형태로 저장
+with open("detect_test_data.pickle","wb") as fw:
+    pickle.dump(train, fw)
+
+with open("detect_tlabel_data.pickle","wb") as fw:
+    pickle.dump(label, fw)
+
+##with open("detect_train_data.pickle","wb") as fw:
+##    pickle.dump(train, fw)
+##
+##with open("detect_label_data.pickle","wb") as fw:
+##    pickle.dump(label, fw)
+
     
-    def __init__(self, cfg, train=True):
-        self.root_dir = cfg.root_dir
-        self.cfg = cfg
-        self.train = train
-
-        self.img_binary_folder = cfg.img_binary_folder
-        self.img_masked_folder = cfg.img_masked_folder
-
-        # detector validation 사용할지는 회의에서 논의해보기
-        # if self.train:
-        #     self.df = pd.read_csv(cfg.train_anns)
-        # else:
-        #     self.df = pd.read_csv(cfg.val_anns)
-
-        self.load_images()        
-        
-    def load_images(self):
-        self.fns = []
-
-        img_binany_paths = os.listdir(self.img_binary_folder)
-        img_masked_paths = os.listdir(self.img_masked_folder)
-
-        for img_binary_name, img_masked_name in zip(img_binany_paths, img_masked_paths) :
-            img_binary_path = os.path.join(self.img_binary_folder, img_binary_name)
-            img_masked_path = os.path.join(self.img_masked_folder, img_masked_name)
-            if os.path.isfile(img_binary_path) :
-                self.fns.append([img_masked_path, img_binary_path])
-
-
-
-    def __getitem__(self, index) :
-        img_masked_path, img_binary_path = self.fns[index]
-        img_masked = cv2.imread(img_masked_path)
-        img_masked = cv2.cvtColor(img_masked, cv2.COLOR_BGR2RGB)
-        img_masked = cv2.resize(img_masked, (self.cfg.img_size, self.cfg.img_size))
-        img_binary = cv2.imread(img_binary_path, 0)
-        img_binary[img_binary>0]=1.0
-        img_binary = np.expand_dims(img_binary, axis=0)
-
-        img_masked = torch.from_numpy(img_masked.astype(np.float32) / 255.0).permute(2, 0, 1).contiguous()
-        img_binary = torch.from_numpy(img_binary.astype(np.float32)).contiguous()
-
-        return img_masked, img_binary
-
-
-    def collate_fn(self, batch):
-        imgs = torch.stack([i[0] for i in batch])
-        masks = torch.stack([i[1] for i in batch])
-        return {
-            'imgs': imgs,
-            'masks': masks
-        }
-    
-    def __len__(self):
-        return len(self.fns)

@@ -1,231 +1,107 @@
-######input################
-#1. 마스크 쓰고있는 사람 사진
-#2. bianry 사진
-
-######output###############
-
-
-import os
-import cv2
-import time
-import numpy as np
-from PIL import Image
-import matplotlib.pyplot as plt
-from tqdm import tqdm
-
+import pickle
 import torch
 import torch.nn as nn
-import torch.utils.data as data
-from torch.optim.lr_scheduler import StepLR
-from torchvision.utils import save_image
 
-##########################성현님, 윤정님###############################
-# from 2_detector import Detector, FacemaskSegDataset # detect_model.py 에서 모델부분
-from detector import detect_model
-from loss import dice
-from metrics import dicecoeff,pixelacc
+import detect_model
+import pytorchtools
 
-# lr 조절
-def adjust_learning_rate(optimizer, gamma, num_steps=1):
-    for i in range(num_steps):
-        for param_group in optimizer.param_groups:
-            param_group['lr'] *= gamma
+# https://tutorials.pytorch.kr/beginner/basics/optimization_tutorial.html 
+#tensor dataset 불러오기
+with open("detect_train_data.pickle","rb") as fr:
+    train = pickle.load(fr)
+with open("detect_label_data.pickle","rb") as fr:
+    label = pickle.load(fr)
+
+with open("detect_test_data.pickle","rb") as fr:
+    test = pickle.load(fr)
+with open("detect_tlabel_data.pickle","rb") as fr:
+    tlabel = pickle.load(fr)
+
+#batch tensor 설정
+train_dataset = []
+batch_size = 2
+for i in range(0,len(train),batch_size):
+    train_temp = torch.cat([train[i],train[i+1]])
+    label_temp = torch.cat([label[i],label[i+1]])
+    train_dataset.append([train_temp,label_temp])
 
 
-def get_epoch_iters(path):
-    path = os.path.basename(path)
-    tokens = path[:-4].split('_')
-    try:
-        if tokens[-1] == 'interrupted':
-            epoch_idx = int(tokens[-3])
-            iter_idx = int(tokens[-2])
-        else:
-            epoch_idx = int(tokens[-2])
-            iter_idx = int(tokens[-1])
-    except:
-        return 0, 0
+test_dataset = []
+for i in range(0,len(test),batch_size):
+    test_temp = torch.cat([test[i],test[i+1]])
+    tlabel_temp = torch.cat([tlabel[i],tlabel[i+1]])
+    test_dataset.append([test_temp,tlabel_temp])
 
-    return epoch_idx, iter_idx
 
-def load_checkpoint(model, path):
-    state = torch.load(path,map_location='cpu')
-    model.load_state_dict(state)
-    print('Loaded checkpoint successfully')
+#학습 파라미터 설정
+img_size = 128
+in_dim = 3
+out_dim = 1
+num_filters = 64
+num_epoch = 300
+lr = 0.001
 
-class Detect_Trainer():
-    def __init__(self, args, cfg):
+patience=30
+flag = 0
+
+size = len(train_dataset)
+tsize = len(test)
+tnum_batches = len(test_dataset)
+
+# 앞서 정의한대로 vGG 클래스를 인스턴스화 하고 지정한 장치에 올립니다.
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+model = detect_model.Detector(in_dim=in_dim,out_dim=out_dim,num_filter=num_filters).to(device)
+
+# 손실함수 및 최적화함수를 설정합니다.
+#loss_func = nn.CrossEntropyLoss()
+loss_func = nn.BCELoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+
+import time
+val_loss = 1
+early_stopping = 0
+for i in range(num_epoch+1):
+    start_time = time.time()
+    for j in range(len(train_dataset)):
+        X = train_dataset[j][0]
+        y = train_dataset[j][1]
         
-        if args.resume is not None:
-            epoch, iters = get_epoch_iters(args.resume)
-        else:
-            epoch = 0
-            iters = 0
-
-        self.cfg = cfg
-        self.step_iters = cfg.step_iters
-        self.gamma = cfg.gamma
-        self.visualize_per_iter = cfg.visualize_per_iter
-        self.print_per_iter = cfg.print_per_iter
-        self.save_per_iter = cfg.save_per_iter
+        optimizer.zero_grad()
+        output = model.forward(X)
         
-        self.start_iter = iters
-        self.iters = 0
-        self.num_epochs = cfg.num_epochs
-        self.device = torch.device('cuda:1' if cfg.cuda else 'cpu')
-#########################윤정님#####################################
-        trainset = detect_model.FacemaskSegDataset(cfg) # [img_path, mask_path]
-        valset = detect_model.FacemaskSegDataset(cfg, train=False)
-   
-        self.trainloader = data.DataLoader(
-            trainset, 
-            batch_size=cfg.batch_size,
-            num_workers = cfg.num_workers,
-            pin_memory = True, 
-            shuffle=True,
-            collate_fn = trainset.collate_fn)
-
-        self.valloader = data.DataLoader(
-            valset, 
-            batch_size=cfg.batch_size,
-            num_workers = cfg.num_workers,
-            pin_memory = True, 
-            shuffle=True,
-            collate_fn = valset.collate_fn)
-
-        self.epoch = int(self.start_iter / len(self.trainloader))
-        self.iters = self.start_iter
-        self.num_iters = (self.num_epochs+1) * len(self.trainloader)
-#########################성현님##########################
-        self.model = detect_model.Detector().to(self.device)
-        self.criterion_dice = dice.DiceLoss()
-        self.criterion_bce = nn.BCELoss()
-
-        if args.resume is not None:
-            load_checkpoint(self.model, args.resume)
-
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=cfg.lr)
-
-    def validate(self, sample_folder, sample_name, img_list):
-        save_img_path = os.path.join(sample_folder, sample_name+'.png') 
-        img_list  = [i.clone().cpu() for i in img_list]
-        imgs = torch.stack(img_list, dim=1)
-                                  
-        # imgs shape: Bx5xCxWxH
-
-        imgs = imgs.view(-1, *list(imgs.size())[2:])
-        save_image(imgs, save_img_path, nrow= 3)
-        print(f"Save image to {save_img_path}")
-
-
-    def train_epoch(self):
-        self.model.train()
-        running_loss = {
-                'DICE': 0,
-                'BCE':0,
-                 'T': 0,
-            }
-        running_time = 0
-
-        for idx, batch in enumerate(self.trainloader):#[img_path, mask_path]
-            self.optimizer.zero_grad() # grad 0으로 만들고 시작
-            inputs = batch['imgs'].to(self.device)
-            targets = batch['masks'].to(self.device)
-            
-            start_time = time.time()
-            
-            outputs = self.model(inputs)
-
-            loss_bce = self.criterion_bce(outputs, targets)
-            loss_dice = self.criterion_dice(outputs, targets)
-            loss = loss_bce + loss_dice
-            loss.backward()
-            self.optimizer.step()
-            
-            end_time = time.time()
-            
-            running_loss['T'] += loss.item()
-            running_loss['DICE'] += loss_dice.item()
-            running_loss['BCE'] += loss_bce.item()
-            running_time += end_time-start_time
-
-            if self.iters % self.print_per_iter == 0:
-                for key in running_loss.keys():
-                    running_loss[key] /= self.print_per_iter
-                    running_loss[key] = np.round(running_loss[key], 5)
-                loss_string = '{}'.format(running_loss)[1:-1].replace("'",'').replace(",",' ||')
-                running_time = np.round(running_time, 5)
-                print('[{}/{}][{}/{}] || {} || Time: {}s'.format(self.epoch, self.num_epochs, self.iters, self.num_iters, loss_string,  running_time))
-                running_time = 0
-                running_loss = {
-                    'DICE': 0,
-                    'BCE':0, 
-                    'T': 0,
-                }
-
-
-            if self.iters % self.save_per_iter  == 0:
-                save_path = os.path.join(
-                        self.cfg.checkpoint_path, 
-                        f"model_segm_{self.epoch}_{self.iters}.pth")
-                torch.save(self.model.state_dict(),save_path)
-                print(f'Save model at {save_path}')
-            self.iters +=1
-
-    def validate_epoch(self):
-        #Validate
+        loss = loss_func(output,y)
+        loss.backward()
         
-        self.model.eval()
-        metrics = [dicecoeff.DiceScore(1), pixelacc.PixelAccuracy(1)]
-        running_loss = {
-            'DICE': 0,
-            'BCE':0,
-             'T': 0,
-        }
+        optimizer.step()
+    
+    #######test###########
+    test_loss, correct = 0, 0
+    with torch.no_grad():
+        for tX, ty in test_dataset:
+            pred = model(tX)
+            test_loss += loss_func(pred, ty).item()
+            # correct_prediction = torch.argmax(pred, 1) == ty
+            # correct += correct_prediction.type(torch.float).sum().item()
+            predict = torch.argmax(pred.long(), 1) + 1
+            target = ty.long() + 1
+            correct += torch.sum((predict == target) * (target > 0)).item()
 
-        running_time = 0
-        print('=============================EVALUATION===================================')
-        with torch.no_grad():
-            start_time = time.time()
-            for idx, batch in enumerate(tqdm(self.valloader)):
+    test_loss /= 200
+    correct /= 200
+    end_time = time.time()
+    running_time = end_time - start_time
+    if (i+1) % 5 ==0:
+        print(f"epoch:{(i+1):4d}  ||  train Loss:{loss.item():.6f}  ||  test Loss:{test_loss:.6f}  ||  acc:{correct*100}% || time:{running_time*5:.3f}")
+        if test_loss < val_loss:
+            print(f'loss advanced : {val_loss:.6f} --> {test_loss:.6f}___model saved___!!!!!!')
+            val_loss = test_loss
+            torch.save(model.state_dict(), f'./weights/detect_1000img_300epoch.pth')
+        else: #loss가 좋아지지 않는다면
+            early_stopping+=1
+            if early_stopping >= 20:
+                break
 
-                inputs = batch['imgs'].to(self.device)
-                targets = batch['masks'].to(self.device)
-                outputs = self.model(inputs)
-                loss_bce = self.criterion_bce(outputs, targets)
-                loss_dice = self.criterion_dice(outputs, targets)
-                loss = loss_bce + loss_dice
-                running_loss['T'] += loss.item() # 딕셔너리 키,값
-                running_loss['DICE'] += loss_dice.item()
-                running_loss['BCE'] += loss_bce.item()
-                for metric in metrics: # metrics = [DiceScore(1), PixelAccuracy(1)]
-                    metric.update(outputs.cpu(), targets.cpu())
 
-            end_time = time.time()
-            running_time += (end_time - start_time)
-            running_time = np.round(running_time, 5)
-            for key in running_loss.keys():
-                running_loss[key] /= len(self.valloader)
-                running_loss[key] = np.round(running_loss[key], 5)
+print("Done!")
 
-            loss_string = '{}'.format(running_loss)[1:-1].replace("'",'').replace(",",' ||')
-            
-            print('[{}/{}] || Validation || {} || Time: {}s'.format(self.epoch, self.num_epochs, loss_string, running_time))
-            for metric in metrics:
-                print(metric)
-            print('==========================================================================')
-        
 
-    def fit(self):
-        try: 
-            for epoch in range(self.epoch, self.num_epochs+1): 
-                self.epoch = epoch
-                self.train_epoch()
-                self.validate_epoch()
-        except KeyboardInterrupt:
-                torch.save(
-                    self.model.state_dict(),
-                    os.path.join(
-                        self.cfg.checkpoint_path, 
-                        f"model_segm_{self.epoch}_{self.iters}.pth"))
-                print('Model saved!')
-                    
