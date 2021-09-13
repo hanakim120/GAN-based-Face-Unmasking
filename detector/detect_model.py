@@ -1,31 +1,20 @@
 import torch
 import torch.nn as nn
-import torch.nn.init as init
 
 
-img_size = 128
-in_dim = 32
-out_dim = 1
-num_filters = 32
-num_epoch = 500
-lr = 0.001
 
-# Detector 들어가는 block 설정
-def conv_block(in_dim,out_dim):
+
+def conv_block1_1(in_dim,out_dim):
     model = nn.Sequential(
-        nn.Conv2d(in_dim,out_dim, kernel_size=3, stride=1, padding=1),
-        nn.InstanceNorm2d(out_dim),
-        nn.LeakyReLU(0.2, inplace=True),
+        nn.Conv2d(in_dim,out_dim, kernel_size=3, stride=1, padding=1)
     )
     return model
 
-def conv_block1(in_dim,out_dim):
+def conv_block1_2(in_dim,out_dim):
     model = nn.Sequential(
         nn.Conv2d(in_dim,out_dim, kernel_size=3, stride=1, padding=1),
-        nn.Conv2d(in_dim,out_dim, kernel_size=3, stride=1, padding=1),
         nn.InstanceNorm2d(out_dim),
-        nn.LeakyReLU(0.2, inplace=True),
-
+        nn.LeakyReLU(0.2, inplace=True)
     )
     return model
 
@@ -43,15 +32,15 @@ def maxpool():
 
 def conv_block_2(in_dim,out_dim):
     model = nn.Sequential(
-        conv_block(in_dim,out_dim),
+        nn.Conv2d(in_dim,out_dim, kernel_size=3, stride=1, padding=1),
+        nn.InstanceNorm2d(out_dim),
+        nn.LeakyReLU(0.2, inplace=True),
         nn.Conv2d(out_dim,out_dim, kernel_size=3, stride=1, padding=1),
         nn.InstanceNorm2d(out_dim),
         nn.LeakyReLU(0.2, inplace=True),
     )
     return model
 
-
-# dector 쌓음
 class Detector(nn.Module):
     def __init__(self, in_dim, out_dim, num_filter):
         super(Detector, self).__init__()
@@ -59,9 +48,11 @@ class Detector(nn.Module):
         self.out_dim = out_dim
         self.num_filter = num_filter
 
-        print("\n------Initiating U-Net------\n")
+        print("\n------Initiating Detect, U-Net------\n")
 
-        self.down_1 = conv_block1(self.in_dim, self.num_filter)
+        self.down_1 = conv_block1_1(self.in_dim, self.num_filter)
+        self.pool_1 = maxpool()
+        self.down_1 = conv_block1_2(self.in_dim, self.num_filter)
         self.pool_1 = maxpool()
         self.down_2 = conv_block_2(self.num_filter * 1, self.num_filter * 2)
         self.pool_2 = maxpool()
@@ -83,7 +74,7 @@ class Detector(nn.Module):
 
         self.out = nn.Sequential(
             nn.Conv2d(self.num_filter, self.out_dim, 3, 1, 1),
-            nn.Tanh(),  # 필수는 아님
+            nn.Sigmoid()  # 필수는 아님
         )
 
     def forward(self, input):
@@ -112,15 +103,3 @@ class Detector(nn.Module):
         up_4 = self.up_4(concat_4)
         out = self.out(up_4)
         return out
-
-
-# cuda 설정 및 optimizer,loss설정 (변경해야할 수 있음)
-cuda = torch.device('cuda')
-
-model = Detector(in_dim=in_dim,out_dim=out_dim,num_filter=num_filters)
-
-model = model.cuda()
-
-
-# loss_func = nn.BCELoss()
-# optimizer = torch.optim.Adam(model.parameters(), lr=lr)
