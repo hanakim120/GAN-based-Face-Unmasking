@@ -75,7 +75,7 @@ class PixelAccuracy():
             print(f'\tClass {i}: {x:.4f}')
 
     def __str__(self):
-        return f'Pixel Accuracy: {self.value()}'
+        return f'Pixel Accuracy: {self.value()*100}'
 
     def __len__(self):
         return len(self.sample_size)
