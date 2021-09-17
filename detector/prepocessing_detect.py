@@ -10,8 +10,8 @@ from torchvision import transforms
 import torchvision.transforms as transforms
 
 
-img_masked_name = os.listdir('/content/drive/MyDrive/Ai_project/GAN_code_review/GAN-based-Face-Unmasking/detector/image/img_masked_validate')
-img_binary_name = os.listdir('/content/drive/MyDrive/Ai_project/GAN_code_review/GAN-based-Face-Unmasking/detector/image/img_binary_validate')
+img_masked_name = sorted(os.listdir('/content/drive/MyDrive/Ai_project/GAN_code_review/GAN-based-Face-Unmasking/detector/image/img_masked_validate'))
+img_binary_name = sorted(os.listdir('/content/drive/MyDrive/Ai_project/GAN_code_review/GAN-based-Face-Unmasking/detector/image/img_binary_validate'))
 root = '/content/drive/MyDrive/Ai_project/GAN_code_review/GAN-based-Face-Unmasking'
 print('File 개수 확인')
 print(len(img_masked_name))
