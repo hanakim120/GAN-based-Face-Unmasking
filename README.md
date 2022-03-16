@@ -134,21 +134,23 @@ python main.py --src imgs/test6.jpg --dst imgs/test4.jpg --out results/output6_4
 ```
 
 ## Results
-Detector Batch size: 32
-Detector Epoch: 75
+### Detector, Editor result 
+<p  align="center">
+<img  src="./image/compare.png"  width="80%"  align="middle"/>
+  
+<img  src="./image/result.png"  width="80%"  align="middle"/>
+</p>
 
-Editor Batch size: 16
-Editor Epoch: 192
+### Face Swap 까지 적용한 result
 
 <p  align="center">
-<img  src="./image/compare.png"  width="40%"  align="middle"/>
-<img  src="./image/result.png"  width="40%"  align="middle"/>
+<img  src="./image/swap_result.png"  width="60%"  align="middle"/>
 </p>
 
 ## Service
 
 <p  align="center">
-<img  src="./image/service.png"  width="40%"  align="middle"/>
+<img  src="./image/service.png"  width="80%"  align="middle"/>
 </p>
 
 ## Paper References
