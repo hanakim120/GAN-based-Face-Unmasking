@@ -2,9 +2,10 @@
 
 <p>
 <a  href="https://github.com/hanakim120/GAN-based-Face-Unmasking"><img  src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fhanakim120%2FGAN-based-Face-Unmasking&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false"/></a>
-  
-GAN 기반 마스크로 가려진 얼굴 이미지 생성 서비스 'Mask2Face'
-============================
+<p>
+<h1 align="center">GAN 기반 마스크로 가려진 얼굴 이미지 생성 서비스 <strong>'Mask2Face'</strong></h1>
+</p>
+
 <p  align="center">
   
 <img  src="./image/logo_mint.jpeg"  width="20%"  align="middle"/>
@@ -16,7 +17,7 @@ GAN 기반 마스크로 가려진 얼굴 이미지 생성 서비스 'Mask2Face'
   
 ## 😷 Quick overview
 
-#### 포스트 코로나 시대의 안전과 추억을 지키기 위한 마스크 리무버 웹/어플 서비스
+### 포스트 코로나 시대의 안전과 추억을 지키기 위한 마스크 리무버 웹/어플 서비스
 
 > 1) 사용자의 마스크 쓴 사진의 마스크 부분 탐지 (Detect Module)
 > 2) GAN을 이용해 마스크 밖 얼굴과 자연스럽게 어울리는 얼굴 이미지 생성 (Editor Module)
@@ -133,8 +134,8 @@ GAN 기반 마스크로 가려진 얼굴 이미지 생성 서비스 'Mask2Face'
 python main.py --src imgs/test6.jpg --dst imgs/test4.jpg --out results/output6_4.jpg --correct_color
 ```
 
-## 📊 Results
-### Detector, Editor result 
+## 📊 Detector, Editor Results
+
 <p  align="center">
 <img  src="./image/compare.png"  width="80%"  align="middle"/>
   
@@ -148,6 +149,8 @@ python main.py --src imgs/test6.jpg --dst imgs/test4.jpg --out results/output6_4
 </p>
 
 ## 🤳🏻 Service
+### www.mask2face.me 
+- 본서비스는 현재 중단되었습니다.
 
 <p  align="center">
 <img  src="./image/service.png"  width="80%"  align="middle"/>
