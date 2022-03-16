@@ -150,7 +150,7 @@ python main.py --src imgs/test6.jpg --dst imgs/test4.jpg --out results/output6_4
 
 ## 🤳🏻 Service
 ### www.mask2face.me 
-- 본서비스는 현재 중단되었습니다.
+- 본 서비스는 현재 중단되었습니다.
 
 <p  align="center">
 <img  src="./image/service.png"  width="80%"  align="middle"/>
