@@ -26,7 +26,7 @@ GAN 기반 마스크로 가려진 얼굴 이미지 생성 서비스 'Mask2Face'
 > 2) GAN을 이용해 마스크 밖 얼굴과 자연스럽게 어울리는 얼굴 이미지 생성 (Editor Module)
 > 3) 사용자의 맨얼굴 사진을 받아 본인의 얼굴과 더 유사하게 이미지 생성 (Face Swap)
 
-- 자세한 내용은 아래 최종 발표 자료를 참고해주세요
+- 자세한 내용은 아래 최종 발표 자료와 Demo Video 를 참고해주세요
 
   
 ## 🥇 수상 및 발표 자료
@@ -61,55 +61,59 @@ GAN 기반 마스크로 가려진 얼굴 이미지 생성 서비스 'Mask2Face'
 
 
 ## Folder structure
+```
+  this repo
+  │   controller.py
+  │
+  └───configs
+  │     config.py
+  │     detect.yaml
+  │     edit.yaml
+  │
+  └───dataprepare
+  │     └───img_binary
+  │     └───img_gt
+  │     └───img_mask
+  │     mask.py
+  │     numalign.py
+  │
+  └───detector
+  │     └───detect_result_img
+  │     └───weights
+  │     └───image
+  │     detect_model.py
+  │     detect_trainer.py
+  │     preprocessing_detect.py
+  │     sharpening.py
+  │     detect_trainer.ipynb
+  │
+  └───editor
+  │     └───results
+  │     └───weights
+  │     edit_model.py
+  │     edit_trainer.py
+  │     preprocessing_edit.py
+  │
+  └───loss
+  │     adversarial.py
+  │     dice.py
+  │     ssim.py
+  │
+  └───matrics
+  │     dicecoeff.py
+  │     pixelacc.py
+  │
+  └───face_swap
+  │     └───content
+  │     └───imgs
+  │     └───models
+  │     └───results
+  │     face_detection.py
+  │     face_swap.py
+  │     main.py
+  │     face_landmark_detection.ipynb
+   ```
 
-this repo
-│ controller.py
-│
-└───configs
-
-│ config.py
-│ detect.yaml
-│ edit.yaml
-│
-└───dataprepare
-│ └───img_binary
-│ └───img_gt
-│ └───img_mask
-│ mask.py
-│ numalign.py
-│
-└───detector
-│ └───detect_result_img
-│ └───weights
-│ └───image
-│ detect_model.py
-│ detect_trainer.py
-│ preprocessing_detect.py
-│ sharpening.py
-│
-└───editor
-│ └───results
-│ └───weights
-│ edit_model.py
-│ edit_trainer.py
-│ preprocessing_edit.py
-└───loss
-│ adversarial.py
-│ dice.py
-│ ssim.py
-│
-└───matrics
-│ dicecoeff.py
-│ pixelacc.py
-│
-└───face_swap
-│ └───content
-│ └───imgs
-│ └───models
-│ └───results
-│ face_detection.py
-│ face_swap.py
-│ main.py
 
 ## Data set
 
@@ -144,7 +148,7 @@ python main.py --src imgs/test6.jpg --dst imgs/test4.jpg --out results/output6_4
 ### Face Swap 까지 적용한 result
 
 <p  align="center">
-<img  src="./image/swap_result.png"  width="60%"  align="middle"/>
+<img  src="./image/swap_result.png"  width="40%"  align="middle"/>
 </p>
 
 ## Service
