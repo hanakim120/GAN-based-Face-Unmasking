@@ -11,7 +11,6 @@ import torch.utils.data as data
 from torch.optim.lr_scheduler import StepLR
 from torchvision.utils import save_image
 
-
 from editor import edit_model, preprocessing_edit
 from loss import adversarial,ssim
 
@@ -191,7 +190,6 @@ class EditTrainer():
                     running_loss['R_2'] += (self.cfg.lambda_rec_2 * loss_rec_2.item())
                     running_loss['T'] += loss.item()
                     
-
                     if self.iters % self.print_per_iter == 0:
                         for key in running_loss.keys():
                             running_loss[key] /= self.print_per_iter
@@ -222,8 +220,6 @@ class EditTrainer():
                             adjust_learning_rate(self.optimizer_G, self.gamma)
                             step+=1
                    
-                            
-               
                     # Visualize sample
                     if self.iters % self.visualize_per_iter == 0:
                         masked_imgs = imgs * (1 - masks) + masks

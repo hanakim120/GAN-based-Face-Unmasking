@@ -1,9 +1,6 @@
 import torch
 import torch.nn as nn
 
-
-
-
 def conv_block1_1(in_dim,out_dim):
     model = nn.Sequential(
         nn.Conv2d(in_dim,out_dim, kernel_size=3, stride=1, padding=1)

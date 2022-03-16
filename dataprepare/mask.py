@@ -7,13 +7,11 @@ import cv2
 
 __version__ = '0.3.0'
 
-
 IMAGE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'images')
 DEFAULT_IMAGE_PATH = os.path.join(IMAGE_DIR, 'default-mask.png')
 BLACK_IMAGE_PATH = os.path.join(IMAGE_DIR, 'black-mask.png')
 BLUE_IMAGE_PATH = os.path.join(IMAGE_DIR, 'blue-mask.png')
 RED_IMAGE_PATH = os.path.join(IMAGE_DIR, 'red-mask.png')
-
 
 def cli():
     parser = argparse.ArgumentParser(description='Wear a face mask in the given picture.')
@@ -67,7 +65,6 @@ def create_mask4(image_path):
     show = False
     model = "hog"
     FaceMasker(pic_path, mask_path, show, model).mask()
-
 
 class FaceMasker:
     KEY_FACIAL_FEATURES = ('nose_bridge', 'chin')
@@ -155,7 +152,6 @@ class FaceMasker:
         angle = np.arctan2(chin_bottom_point[1] - nose_point[1], chin_bottom_point[0] - nose_point[0])
         rotated_mask_img = mask_img.rotate(angle, expand=True)
         
-        
         # calculate mask location
         center_x = (nose_point[0] + chin_bottom_point[0]) // 2
         center_y = (nose_point[1] + chin_bottom_point[1]) // 2
@@ -170,7 +166,7 @@ class FaceMasker:
         h = self._face_img.height
         w = self._face_img.width
         
-        # binary mask img 만들기
+        # make binary mask img 
         mask_img_binary = np.array(mask_img)
         height2,width2,tmp = mask_img_binary.shape
         
@@ -181,19 +177,19 @@ class FaceMasker:
         
         mask_img_binary = Image.fromarray(mask_img_binary)
 
-        #사람 얼굴사진 가로세로 크기대로 black배경 만들고 마스크 넣기
+        # make black background same as input picture size, except mask part
         black_arr = np.zeros((h,w, 4), dtype=np.uint8)        
         self.black_img = Image.fromarray(black_arr)
         self.black_img.paste(mask_img_binary, (box_x, box_y), mask_img_binary)
 
     def _save(self):
-        #사람에 마스크 씌운 얼굴
+        # save a picture with a mask on a person's face
         path_splits = os.path.splitext(self.face_path)
         new_face_path = path_splits[0] + '-with-mask_red' + path_splits[1]
         self._face_img.save(new_face_path)
         print(f'Save to {new_face_path}')
 
-        #바이너리 마스크
+        # save binary mask
         new_face_path2 = path_splits[0] + '-with-binary_red' + path_splits[1]
         black = self.black_img.convert("RGB")
         black.save(new_face_path2)
@@ -208,7 +204,6 @@ class FaceMasker:
                    np.sqrt((line_point2[1] - line_point1[1]) * (line_point2[1] - line_point1[1]) +
                            (line_point1[0] - line_point2[0]) * (line_point1[0] - line_point2[0]))
         return int(distance)
-
 
 if __name__ == '__main__':
 
