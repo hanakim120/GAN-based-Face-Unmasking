@@ -1,3 +1,4 @@
+
 import pickle
 import torch
 import torch.nn as nn
@@ -20,7 +21,6 @@ with open("detect_tlabel_data.pickle","rb") as fr:
     tlabel = pickle.load(fr)
 
 ########batch tensor 설정########
-#가지고있는것
 #train, label
 #test, tlabel
 #순서
@@ -78,23 +78,17 @@ for i in range(1,test_size):
 
 
 #학습 파라미터 설정
-#img_size = 128
 in_dim = 3
 out_dim = 1
 num_filters = 64
 num_epoch = 300
 lr = 0.001
 
-patience=30
-flag = 0
-
-
-# 앞서 정의한대로 vGG 클래스를 인스턴스화 하고 지정한 장치에 올립니다.
+# vGG 클래스를 인스턴스화 하고 지정한 장치에 올리기
 device = torch.device("cuda")
 model = detect_model.Detector(in_dim=in_dim,out_dim=out_dim,num_filter=num_filters).to(device)
 
-# 손실함수 및 최적화함수를 설정합니다.
-#loss_func = nn.CrossEntropyLoss()
+# 손실함수 및 최적화함수를 설정
 loss_func = nn.BCELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 

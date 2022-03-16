@@ -9,21 +9,22 @@ import torch
 from torchvision import transforms
 import torchvision.transforms as transforms
 
-
-img_masked_name = os.listdir('/content/drive/MyDrive/Ai_project/GAN_code_review/GAN-based-Face-Unmasking/detector/image/img_masked_validate')
-img_binary_name = os.listdir('/content/drive/MyDrive/Ai_project/GAN_code_review/GAN-based-Face-Unmasking/detector/image/img_binary_validate')
+img_masked_name = sorted(os.listdir('/content/drive/MyDrive/Ai_project/GAN_code_review/GAN-based-Face-Unmasking/detector/image/img_masked_validate'))
+img_binary_name = sorted(os.listdir('/content/drive/MyDrive/Ai_project/GAN_code_review/GAN-based-Face-Unmasking/detector/image/img_binary_validate'))
 root = '/content/drive/MyDrive/Ai_project/GAN_code_review/GAN-based-Face-Unmasking'
-print('File 개수 확인')
+
+print('Check number of File')
 print(len(img_masked_name))
 print(len(img_binary_name))
 
-print('Deviece 확인')
+print('Check Deviece')
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
 
+# convert to tensor
 loader_color = transforms.Compose([transforms.ToTensor()])
 loader_gray = transforms.Compose([transforms.ToTensor(),
-                                  transforms.Grayscale(num_output_channels=1)])  # 토치 텐서로 변환
+                                  transforms.Grayscale(num_output_channels=1)])
 
 def image_loader_color(image_name):
     image = Image.open(image_name)
@@ -50,17 +51,10 @@ for i in range(len(img_binary_name)):
       print(image.size)
     label.append(image)
 
-#피클형태로 저장
+# Save as pickle
 with open("detect_test_data.pickle","wb") as fw:
     pickle.dump(train, fw)
 
 with open("detect_tlabel_data.pickle","wb") as fw:
     pickle.dump(label, fw)
-
-##with open("detect_train_data.pickle","wb") as fw:
-##    pickle.dump(train, fw)
-##
-##with open("detect_label_data.pickle","wb") as fw:
-##    pickle.dump(label, fw)
-
     

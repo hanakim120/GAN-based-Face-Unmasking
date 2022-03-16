@@ -34,6 +34,7 @@ class FacemaskDataset(data.Dataset):
         img_gt = cv2.resize(img_gt, (self.cfg.img_size_h, self.cfg.img_size_w))
         img_binary = cv2.imread(img_binary_path, 0)
         img_binary[img_binary>0]=1.0
+        img_binary = cv2.resize(img_binary, (self.cfg.img_size_h, self.cfg.img_size_w))
         img_binary = np.expand_dims(img_binary, axis=0)
     
         img_gt = torch.from_numpy(img_gt.astype(np.float32) / 255.0).permute(2, 0, 1).contiguous()
