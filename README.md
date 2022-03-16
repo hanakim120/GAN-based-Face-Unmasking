@@ -4,7 +4,7 @@
 <a  href="https://github.com/hanakim120/GAN-based-Face-Unmasking"><img  src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fhanakim120%2FGAN-based-Face-Unmasking&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false"/></a>
   
 <a href="">
-    <img src="./image/logo.png" align="right" height="70" />
+    <img src="./image/logo.png" align="right" height="50" />
 </a>
   
 GAN 기반 마스크로 가려진 얼굴 이미지 생성 서비스 'Mask2Face'
@@ -66,6 +66,7 @@ this repo
 │ controller.py
 │
 └───configs
+
 │ config.py
 │ detect.yaml
 │ edit.yaml
@@ -139,7 +140,16 @@ Detector Epoch: 75
 Editor Batch size: 16
 Editor Epoch: 192
 
+<p  align="center">
+<img  src="./image/compare.png"  width="40%"  align="middle"/>
+<img  src="./image/result.png"  width="40%"  align="middle"/>
+</p>
 
+## Service
+
+<p  align="center">
+<img  src="./image/service.png"  width="40%"  align="middle"/>
+</p>
 
 ## Paper References
 
