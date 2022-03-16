@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 
-
 class DiceLoss(nn.Module):
     """
     Dice loss of binary class

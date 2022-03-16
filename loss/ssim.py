@@ -37,7 +37,6 @@ def _ssim(img1, img2, window, window_size, channel, size_average = True):
         return ssim_map.mean()
     else:
         return ssim_map.mean(1).mean(1).mean(1)
-
 class SSIM(torch.nn.Module):
     def __init__(self, window_size = 11, size_average = True):
         super(SSIM, self).__init__()

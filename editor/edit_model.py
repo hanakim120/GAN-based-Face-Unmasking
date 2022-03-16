@@ -50,8 +50,6 @@ class TransposeGatedConv2d(nn.Module):
         x = F.interpolate(x, scale_factor = self.scale_factor, mode = 'nearest')
         x = self.gated_conv2d(x)
         return x
-
-
 class GatedGenerator(nn.Module):
     def __init__(self, in_channels=4, latent_channels=64, out_channels=3):
         super(GatedGenerator, self).__init__()
@@ -158,7 +156,6 @@ class NLayerDiscriminator(nn.Module):
 
     def forward(self, input):
         return self.model(input)
-
 class PerceptualNet(nn.Module):
     # https://gist.github.com/alper111/8233cdb0414b4cb5853f2f730ab95a49
     def __init__(self, name = "vgg19", resize=True):

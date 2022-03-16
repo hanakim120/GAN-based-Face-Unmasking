@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import numpy as np
 
-
 class DiceScore():
     def __init__(self, num_classes, ignore_index=None, eps=1e-6, thresh=0.5):
         self.thresh = thresh
