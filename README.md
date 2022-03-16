@@ -2,45 +2,49 @@
 
 <p>
 <a  href="https://github.com/hanakim120/GAN-based-Face-Unmasking"><img  src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fhanakim120%2FGAN-based-Face-Unmasking&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false"/></a>
-
-GAN ±â¹İ ¸¶½ºÅ©·Î °¡·ÁÁø ¾ó±¼ ÀÌ¹ÌÁö »ı¼º ¼­ºñ½º 'Mask2Face'
+  
+<a href="">
+    <img src="./image/logo.png" align="right" height="70" />
+</a>
+  
+GAN ê¸°ë°˜ ë§ˆìŠ¤í¬ë¡œ ê°€ë ¤ì§„ ì–¼êµ´ ì´ë¯¸ì§€ ìƒì„± ì„œë¹„ìŠ¤ 'Mask2Face'
 ============================
 <p  align="center">
-<img  src="./image/logo.png"  width="80%"  align="middle"/>
+  
+<img  src="./image/logo_mint.jpeg"  width="20%"  align="middle"/>
+<img  src="./image/logo_green.jpeg"  width="20%"  align="middle"/>
+<img  src="./image/logo_blue.jpeg"  width="20%"  align="middle"/>
+<img  src="./image/logo_yellow.png"  width="20%"  align="middle"/>
+  
 </p>
+  
+## ğŸ˜· Quick overview
 
-## ? Quick overview
+#### í¬ìŠ¤íŠ¸ ì½”ë¡œë‚˜ ì‹œëŒ€ì˜ ì•ˆì „ê³¼ ì¶”ì–µì„ ì§€í‚¤ê¸° ìœ„í•œ ë§ˆìŠ¤í¬ ë¦¬ë¬´ë²„ ì›¹/ì–´í”Œ ì„œë¹„ìŠ¤
 
-#### Æ÷½ºÆ® ÄÚ·Î³ª ½Ã´ëÀÇ ¾ÈÀü°ú Ãß¾ïÀ» ÁöÅ°±â À§ÇÑ ¸¶½ºÅ© ¸®¹«¹ö À¥/¾îÇÃ ¼­ºñ½º
+> 1) ì‚¬ìš©ìì˜ ë§ˆìŠ¤í¬ ì“´ ì‚¬ì§„ì˜ ë§ˆìŠ¤í¬ ë¶€ë¶„ íƒì§€ (Detect Module)
+> 2) GANì„ ì´ìš©í•´ ë§ˆìŠ¤í¬ ë°– ì–¼êµ´ê³¼ ìì—°ìŠ¤ëŸ½ê²Œ ì–´ìš¸ë¦¬ëŠ” ì–¼êµ´ ì´ë¯¸ì§€ ìƒì„± (Editor Module)
+> 3) ì‚¬ìš©ìì˜ ë§¨ì–¼êµ´ ì‚¬ì§„ì„ ë°›ì•„ ë³¸ì¸ì˜ ì–¼êµ´ê³¼ ë” ìœ ì‚¬í•˜ê²Œ ì´ë¯¸ì§€ ìƒì„± (Face Swap)
 
-> 1) »ç¿ëÀÚÀÇ ¸¶½ºÅ© ¾´ »çÁøÀÇ ¸¶½ºÅ© ºÎºĞ Å½Áö (Detect Module)
-> 2) GANÀ» ÀÌ¿ëÇØ ¸¶½ºÅ© ¹Û ¾ó±¼°ú ÀÚ¿¬½º·´°Ô ¾î¿ï¸®´Â ¾ó±¼ ÀÌ¹ÌÁö »ı¼º (Editor Module)
-> 3) »ç¿ëÀÚÀÇ ¸Ç¾ó±¼ »çÁøÀ» ¹Ş¾Æ º»ÀÎÀÇ ¾ó±¼°ú ´õ À¯»çÇÏ°Ô ÀÌ¹ÌÁö »ı¼º (Face Swap)
-
-- ÀÚ¼¼ÇÑ ³»¿ëÀº ¾Æ·¡ ÃÖÁ¾ ¹ßÇ¥ ÀÚ·á¸¦ Âü°íÇØÁÖ¼¼¿ä
+- ìì„¸í•œ ë‚´ìš©ì€ ì•„ë˜ ìµœì¢… ë°œí‘œ ìë£Œë¥¼ ì°¸ê³ í•´ì£¼ì„¸ìš”
 
   
-## ? ¼ö»ó ¹× ¹ßÇ¥ ÀÚ·á
+## ğŸ¥‡ ìˆ˜ìƒ ë° ë°œí‘œ ìë£Œ
 
-- KAIST SW ±³À°¼¾ÅÍ 2021 ¼­ÃÊ AI Ä®¸®Áö Æ÷Æ®Æú¸®¿À ÇÁ·ÎÁ§Æ® ¿ì¼ö»ó ¼ö»ó ([link](https://drive.google.com/file/d/1DAgwf9nh3Q2QzTY6EZaIoPVGEnaX11dl/view?usp=sharing))
+- KAIST SW êµìœ¡ì„¼í„° 2021 ì„œì´ˆ AI ì¹¼ë¦¬ì§€ í¬íŠ¸í´ë¦¬ì˜¤ í”„ë¡œì íŠ¸ ìš°ìˆ˜ìƒ ìˆ˜ìƒ ([link](https://drive.google.com/file/d/1DAgwf9nh3Q2QzTY6EZaIoPVGEnaX11dl/view?usp=sharing))
 
 - Demo Video ([link](https://drive.google.com/file/d/19lh7OmpyMmUEsqIwLp2RscjDyqjgnCnK/view?usp=sharing)) 
 
-- ÃÖÁ¾ ¹ßÇ¥ ÀÚ·á ([link](https://drive.google.com/file/d/1O5R8_9GVTeDSfEUj4zTqSLshJgOFP_f2/view?usp=sharing))
+- ìµœì¢… ë°œí‘œ ìë£Œ ([link](https://drive.google.com/file/d/1O5R8_9GVTeDSfEUj4zTqSLshJgOFP_f2/view?usp=sharing))
 
   
-
-## ÇÁ·ÎÁ§Æ® ¸ğµ¨ ±¸¼º
+## í”„ë¡œì íŠ¸ ëª¨ë¸ êµ¬ì„±
 <p  align="center">
 <img  src="./image/entire_module.png"  width="80%"  align="middle"/>
 </p>
 
 
-
-
-  
-
-## Train model ±¸Á¶µµ
+## Train model êµ¬ì¡°ë„
 
 <p  align="center">
 <img  src="./image/detector_train.png"  width="80%"  align="middle"/>
@@ -52,92 +56,91 @@ GAN ±â¹İ ¸¶½ºÅ©·Î °¡·ÁÁø ¾ó±¼ ÀÌ¹ÌÁö »ı¼º ¼­ºñ½º 'Mask2Face'
 
 ## Skills
 <p  align="center">
-<img  src="./image/skills.png"  width="80%"  align="middle"/>
+<img  src="./image/skills.png"  width="60%"  align="middle"/>
 </p>
 
 
 ## Folder structure
 
 this repo
-¦¢ controller.py
-¦¢
-¦¦¦¡¦¡¦¡configs
-¦¢ config.py
-¦¢ detect.yaml
-¦¢ edit.yaml
-¦¢
-¦¦¦¡¦¡¦¡dataprepare
-¦¢ ¦¦¦¡¦¡¦¡img_binary
-¦¢ ¦¦¦¡¦¡¦¡img_gt
-¦¢ ¦¦¦¡¦¡¦¡img_mask
-¦¢ mask.py
-¦¢ numalign.py
-¦¢
-¦¦¦¡¦¡¦¡detector
-¦¢ ¦¦¦¡¦¡¦¡detect_result_img
-¦¢ ¦¦¦¡¦¡¦¡weights
-¦¢ ¦¦¦¡¦¡¦¡image
-¦¢ detect_model.py
-¦¢ detect_trainer.py
-¦¢ preprocessing_detect.py
-¦¢ sharpening.py
-¦¢
-¦¦¦¡¦¡¦¡editor
-¦¢ ¦¦¦¡¦¡¦¡results
-¦¢ ¦¦¦¡¦¡¦¡weights
-¦¢ edit_model.py
-¦¢ edit_trainer.py
-¦¢ preprocessing_edit.py
-¦¦¦¡¦¡¦¡loss
-¦¢ adversarial.py
-¦¢ dice.py
-¦¢ ssim.py
-¦¢
-¦¦¦¡¦¡¦¡matrics
-¦¢ dicecoeff.py
-¦¢ pixelacc.py
-¦¢
-¦¦¦¡¦¡¦¡face_swap
-¦¢ ¦¦¦¡¦¡¦¡content
-¦¢ ¦¦¦¡¦¡¦¡imgs
-¦¢ ¦¦¦¡¦¡¦¡models
-¦¢ ¦¦¦¡¦¡¦¡results
-¦¢ face_detection.py
-¦¢ face_swap.py
-¦¢ main.py
+â”‚ controller.py
+â”‚
+â””â”€â”€â”€configs
+â”‚ config.py
+â”‚ detect.yaml
+â”‚ edit.yaml
+â”‚
+â””â”€â”€â”€dataprepare
+â”‚ â””â”€â”€â”€img_binary
+â”‚ â””â”€â”€â”€img_gt
+â”‚ â””â”€â”€â”€img_mask
+â”‚ mask.py
+â”‚ numalign.py
+â”‚
+â””â”€â”€â”€detector
+â”‚ â””â”€â”€â”€detect_result_img
+â”‚ â””â”€â”€â”€weights
+â”‚ â””â”€â”€â”€image
+â”‚ detect_model.py
+â”‚ detect_trainer.py
+â”‚ preprocessing_detect.py
+â”‚ sharpening.py
+â”‚
+â””â”€â”€â”€editor
+â”‚ â””â”€â”€â”€results
+â”‚ â””â”€â”€â”€weights
+â”‚ edit_model.py
+â”‚ edit_trainer.py
+â”‚ preprocessing_edit.py
+â””â”€â”€â”€loss
+â”‚ adversarial.py
+â”‚ dice.py
+â”‚ ssim.py
+â”‚
+â””â”€â”€â”€matrics
+â”‚ dicecoeff.py
+â”‚ pixelacc.py
+â”‚
+â””â”€â”€â”€face_swap
+â”‚ â””â”€â”€â”€content
+â”‚ â””â”€â”€â”€imgs
+â”‚ â””â”€â”€â”€models
+â”‚ â””â”€â”€â”€results
+â”‚ face_detection.py
+â”‚ face_swap.py
+â”‚ main.py
 
 ## Data set
 
 - AFD(Asian Face Dataset) + BUPT(BUPT Dataset)
 
-- 160 * 160, ÃÑ 10,000ÀåÀÇ ¾È¸é µ¥ÀÌÅÍ »ç¿ë
+- 160 * 160, ì´ 10,000ì¥ì˜ ì•ˆë©´ ë°ì´í„° ì‚¬ìš©
 
   
-
 ## Training Results Sample
 
 <p  align="center">
-<img  src="./image/train_result_1.png"  width="80%"  align="middle"/>
-<img  src="./image/train_result_2.png"  width="80%"  align="middle"/>
+<img  src="./image/train_result_1.png"  width="40%"  align="middle"/>
+<img  src="./image/train_result_2.png"  width="40%"  align="middle"/>
 </p>
 
 
-## Results ()
-
-| | |
-
-|:-------------------------:|:-------------------------:|
-
-|<img  width="900"  alt="screen"  src="./image/train_result_1.png"> | <img  width="900"  alt="screen"  src="./image/train_result_2.png"> |
-
-  
-
 ## Face Swap scripts
-- test4.jpg ¿¡ test6.jpgÀÇ ¾ó±¼À» swap
+- test4.jpg ì— test6.jpgì˜ ì–¼êµ´ì„ swap
 
-    python main.py --src imgs/test6.jpg --dst imgs/test4.jpg --out results/output6_4.jpg --correct_color
+```
+python main.py --src imgs/test6.jpg --dst imgs/test4.jpg --out results/output6_4.jpg --correct_color
+```
 
-    
+## Results
+Detector Batch size: 32
+Detector Epoch: 75
+
+Editor Batch size: 16
+Editor Epoch: 192
+
+
+
 ## Paper References
 
 -  [A Novel GAN-Based Network for Unmasking of Masked Face](https://ieeexplore.ieee.org/abstract/document/9019697)
@@ -160,9 +163,9 @@ this repo
 
 ## Book References
 
-- Ä«ÀÏ¶ó½¬ ¾ÆÈ÷¸£¿Í(2019), ½ÇÀü! GAN ÇÁ·ÎÁ§Æ®(µ¥ÀÌÅÍ »çÀÌ¾ğ½º ½Ã¸®Áî 43), À§Å°ºÏ½º
+- ì¹´ì¼ë¼ì‰¬ ì•„íˆë¥´ì™€(2019), ì‹¤ì „! GAN í”„ë¡œì íŠ¸(ë°ì´í„° ì‚¬ì´ì–¸ìŠ¤ ì‹œë¦¬ì¦ˆ 43), ìœ„í‚¤ë¶ìŠ¤
 
-- È²¼±±Ô(2019), OpenCV 4·Î ¹è¿ì´Â ÄÄÇ»ÅÍ ºñÀü°ú ¸Ó½Å ·¯´×, µµ¼­ÃâÆÇ±æ¹ş
+- í™©ì„ ê·œ(2019), OpenCV 4ë¡œ ë°°ìš°ëŠ” ì»´í“¨í„° ë¹„ì „ê³¼ ë¨¸ì‹  ëŸ¬ë‹, ë„ì„œì¶œíŒê¸¸ë²—
 
   
 
@@ -170,4 +173,4 @@ this repo
 
 [![License: LGPL v3](https://img.shields.io/badge/License-MIT-g.svg?style=flat-square)](https://tldrlegal.com/license/gnu-lesser-general-public-license-v3-(lgpl-3))
 
-- Copyright ? [Hana Kim](https://github.com/hanakim120).
+- Copyright [Hana Kim](https://github.com/hanakim120).
