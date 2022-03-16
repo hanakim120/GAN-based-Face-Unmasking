@@ -1,11 +1,15 @@
+
 import pickle
 import torch
 import torch.nn as nn
-import time
-import detect_model
-import pytorchtools
 
-# load tensor dataset
+import detect_model
+from metrics import dicecoeff, pixelacc
+from torch.utils.tensorboard import SummaryWriter
+
+summary = SummaryWriter()
+# https://tutorials.pytorch.kr/beginner/basics/optimization_tutorial.html 
+#tensor dataset 불러오기
 with open("detect_train_data.pickle","rb") as fr:
     train = pickle.load(fr)
 with open("detect_label_data.pickle","rb") as fr:
@@ -16,46 +20,85 @@ with open("detect_test_data.pickle","rb") as fr:
 with open("detect_tlabel_data.pickle","rb") as fr:
     tlabel = pickle.load(fr)
 
-# set batch tensor 
-train_dataset = []
-batch_size = 2
+########batch tensor 설정########
+#train, label
+#test, tlabel
+#순서
+#1. img를 하나씩 넣는 [x] 준비
+#2. [x]들을 가지고 있는 img개수가 batch_size가 되면 cat 후 train_dataset에 넣음
 
-for i in range(0,len(train),batch_size):
-    train_temp = torch.cat([train[i],train[i+1]])
-    label_temp = torch.cat([label[i],label[i+1]])
+train_size=len(train)
+train_dataset=[]
+#batch,concat용 리스트
+train_batch=[train[0]]
+label_batch=[label[0]]
+batch_size = 4
+if batch_size==1:
+    train_temp = torch.cat(train_batch)
+    label_temp = torch.cat(label_batch)
     train_dataset.append([train_temp,label_temp])
+    train_batch, label_batch = [],[]
+for i in range(1,train_size):
+    if (i+1)%batch_size == 0:
+        train_batch.append(train[i])
+        label_batch.append(label[i])
+        
+        train_temp = torch.cat(train_batch)
+        label_temp = torch.cat(label_batch)
+        train_dataset.append([train_temp,label_temp])
+        train_batch, label_batch = [],[]
+    else:
+        train_batch.append(train[i])
+        label_batch.append(label[i])
+    
 
-test_dataset = []
-for i in range(0,len(test),batch_size):
-    test_temp = torch.cat([test[i],test[i+1]])
-    tlabel_temp = torch.cat([tlabel[i],tlabel[i+1]])
+test_size=len(test)
+test_dataset=[]
+#batch,concat용 리스트
+test_batch=[test[0]]
+tlabel_batch=[tlabel[0]]
+test_batch_size = 1
+if test_batch_size==1:
+    test_temp = torch.cat(test_batch)
+    tlabel_temp = torch.cat(tlabel_batch)
     test_dataset.append([test_temp,tlabel_temp])
+    test_batch, tlabel_batch = [],[]
+for i in range(1,test_size):
+    if (i+1)%test_batch_size == 0:
+        test_batch.append(test[i])
+        tlabel_batch.append(tlabel[i])
+        
+        test_temp = torch.cat(test_batch)
+        tlabel_temp = torch.cat(tlabel_batch)
+        test_dataset.append([test_temp,tlabel_temp])
+        test_batch, tlabel_batch = [],[]
+    else:
+        test_batch.append(test[i])
+        tlabel_batch.append(tlabel[i])
 
-# set train parameters
-img_size = 128
+
+#학습 파라미터 설정
 in_dim = 3
 out_dim = 1
 num_filters = 64
 num_epoch = 300
 lr = 0.001
 
-size = len(train_dataset)
-tsize = len(test)
-tnum_batches = len(test_dataset)
-
-# instantiate the VGG class as defined, put it on device
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# vGG 클래스를 인스턴스화 하고 지정한 장치에 올리기
+device = torch.device("cuda")
 model = detect_model.Detector(in_dim=in_dim,out_dim=out_dim,num_filter=num_filters).to(device)
 
-# set loss function, optimizer
-#loss_func = nn.CrossEntropyLoss()
+# 손실함수 및 최적화함수를 설정
 loss_func = nn.BCELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
+import time
 val_loss = 1
 early_stopping = 0
+check = 1
 for i in range(num_epoch+1):
     start_time = time.time()
+    #######train###########
     for j in range(len(train_dataset)):
         X = train_dataset[j][0]
         y = train_dataset[j][1]
@@ -67,36 +110,40 @@ for i in range(num_epoch+1):
         loss.backward()
         
         optimizer.step()
+        if check<10:
+            print("Goooooood!")
+            check+=1
     
     #######test###########
+    metrics = [pixelacc.PixelAccuracy(1)]
     test_loss, correct = 0, 0
     with torch.no_grad():
         for tX, ty in test_dataset:
             pred = model(tX)
             test_loss += loss_func(pred, ty).item()
-            # correct_prediction = torch.argmax(pred, 1) == ty
-            # correct += correct_prediction.type(torch.float).sum().item()
-            predict = torch.argmax(pred.long(), 1) + 1
-            target = ty.long() + 1
-            correct += torch.sum((predict == target) * (target > 0)).item()
+            for metric in metrics:
+                metric.update(pred, ty)
+                
 
-    test_loss /= 200
-    correct /= 200
+    test_loss /= len(test_dataset)
     end_time = time.time()
     running_time = end_time - start_time
 
-    if (i+1) % 5 ==0:
-        print(f"epoch:{(i+1):4d}  ||  train Loss:{loss.item():.6f}  ||  test Loss:{test_loss:.6f}  ||  acc:{correct*100}% || time:{running_time*5:.3f}")
+    summary.add_scalar('loss', loss.item(), i+1)
+    summary.add_scalar('test_loss', test_loss, i+1)
+    
+    print(f"epoch:{(i+1):4d}  ||  train Loss:{loss.item():.6f}  ||  test Loss:{test_loss:.6f}  ||  time:{running_time*5:.3f}")
+    for metric in metrics:
+        print(metric)
+    if (i+1) % 3 ==0:    
         if test_loss < val_loss:
             print(f'loss advanced : {val_loss:.6f} --> {test_loss:.6f}___model saved___!!!!!!')
             val_loss = test_loss
-            torch.save(model.state_dict(), f'./weights/detect_1000img_300epoch.pth')
-
-        else: # apply early stopping
+            torch.save(model.state_dict(), f'/home/ubuntu/GAN-based-Face-Unmasking/detector/weights/detect_{i+1}epochs.pth')
+        else: #loss가 좋아지지 않는다면
             early_stopping+=1
             if early_stopping >= 20:
                 break
 
+summary.close()
 print("Done!")
-
-
