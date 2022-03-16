@@ -3,10 +3,6 @@
 <p>
 <a  href="https://github.com/hanakim120/GAN-based-Face-Unmasking"><img  src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fhanakim120%2FGAN-based-Face-Unmasking&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false"/></a>
   
-<a href="">
-    <img src="./image/logo.png" align="right" height="50" />
-</a>
-  
 GAN 기반 마스크로 가려진 얼굴 이미지 생성 서비스 'Mask2Face'
 ============================
 <p  align="center">
@@ -38,13 +34,13 @@ GAN 기반 마스크로 가려진 얼굴 이미지 생성 서비스 'Mask2Face'
 - 최종 발표 자료 ([link](https://drive.google.com/file/d/1O5R8_9GVTeDSfEUj4zTqSLshJgOFP_f2/view?usp=sharing))
 
   
-## 프로젝트 모델 구성
+## 📍 프로젝트 모델 구성
 <p  align="center">
 <img  src="./image/entire_module.png"  width="80%"  align="middle"/>
 </p>
 
 
-## Train model 구조도
+## 👩🏻‍🏫 Train model 구조도
 
 <p  align="center">
 <img  src="./image/detector_train.png"  width="80%"  align="middle"/>
@@ -54,13 +50,13 @@ GAN 기반 마스크로 가려진 얼굴 이미지 생성 서비스 'Mask2Face'
 <img  src="./image/editor_train.png"  width="80%"  align="middle"/>
 </p>
 
-## Skills
+## 🛠️ Skills
 <p  align="center">
 <img  src="./image/skills.png"  width="60%"  align="middle"/>
 </p>
 
 
-## Folder structure
+## 🌳 Folder structure
 ```
   this repo
   │   controller.py
@@ -115,14 +111,14 @@ GAN 기반 마스크로 가려진 얼굴 이미지 생성 서비스 'Mask2Face'
    ```
 
 
-## Data set
+## 🗂️ Data set
 
 - AFD(Asian Face Dataset) + BUPT(BUPT Dataset)
 
 - 160 * 160, 총 10,000장의 안면 데이터 사용
 
   
-## Training Results Sample
+## 🤖 Training Results Sample
 
 <p  align="center">
 <img  src="./image/train_result_1.png"  width="40%"  align="middle"/>
@@ -130,14 +126,14 @@ GAN 기반 마스크로 가려진 얼굴 이미지 생성 서비스 'Mask2Face'
 </p>
 
 
-## Face Swap scripts
+## 💻 Face Swap scripts
 - test4.jpg 에 test6.jpg의 얼굴을 swap
 
 ```
 python main.py --src imgs/test6.jpg --dst imgs/test4.jpg --out results/output6_4.jpg --correct_color
 ```
 
-## Results
+## 📊 Results
 ### Detector, Editor result 
 <p  align="center">
 <img  src="./image/compare.png"  width="80%"  align="middle"/>
@@ -145,25 +141,25 @@ python main.py --src imgs/test6.jpg --dst imgs/test4.jpg --out results/output6_4
 <img  src="./image/result.png"  width="80%"  align="middle"/>
 </p>
 
-### Face Swap 까지 적용한 result
+## 😃 Face Swap 까지 적용한 result
 
 <p  align="center">
 <img  src="./image/swap_result.png"  width="40%"  align="middle"/>
 </p>
 
-## Service
+## 🤳🏻 Service
 
 <p  align="center">
 <img  src="./image/service.png"  width="80%"  align="middle"/>
 </p>
 
-## Paper References
+## 📃 Paper References
 
 -  [A Novel GAN-Based Network for Unmasking of Masked Face](https://ieeexplore.ieee.org/abstract/document/9019697)
 
   
 
-## Code References
+## ⌨️ Code References
 
 - GAN Generator, Discriminator from https://github.com/kaylode/facemask-removal
 
@@ -177,7 +173,7 @@ python main.py --src imgs/test6.jpg --dst imgs/test4.jpg --out results/output6_4
 
   
 
-## Book References
+## 📚 Book References
 
 - 카일라쉬 아히르와(2019), 실전! GAN 프로젝트(데이터 사이언스 시리즈 43), 위키북스
 
