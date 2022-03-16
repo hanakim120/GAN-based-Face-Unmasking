@@ -188,4 +188,4 @@ python main.py --src imgs/test6.jpg --dst imgs/test4.jpg --out results/output6_4
 
 [![License: LGPL v3](https://img.shields.io/badge/License-MIT-g.svg?style=flat-square)](https://tldrlegal.com/license/gnu-lesser-general-public-license-v3-(lgpl-3))
 
-- Copyright [Hana Kim](https://github.com/hanakim120).
+- Copyright © [Hana Kim](https://github.com/hanakim120).
