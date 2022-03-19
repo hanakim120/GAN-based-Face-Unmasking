@@ -34,6 +34,10 @@
 
 - 최종 발표 자료 ([link](https://drive.google.com/file/d/1O5R8_9GVTeDSfEUj4zTqSLshJgOFP_f2/view?usp=sharing))
 
+## 🛠️ Skills
+<p  align="center">
+<img  src="./image/skills.png"  width="60%"  align="middle"/>
+</p>
   
 ## 📍 프로젝트 모델 구성
 <p  align="center">
@@ -49,11 +53,6 @@
 
 <p  align="center">
 <img  src="./image/editor_train.png"  width="80%"  align="middle"/>
-</p>
-
-## 🛠️ Skills
-<p  align="center">
-<img  src="./image/skills.png"  width="60%"  align="middle"/>
 </p>
 
 
